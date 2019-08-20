@@ -1,4 +1,8 @@
 require "twitter_bot/version"
+require "twitter_bot/base"
+require "twitter_bot/config"
+require "twitter_bot/oauth"
+require "twitter_bot/request"
 require "twitter_bot/client"
 
 module TwitterBot
@@ -8,13 +12,15 @@ module TwitterBot
   class Bot
 
     def initialize(credentials = {})
-      @credentials = credentials
+      @oauth_config = TwitterBot::Config.new(credentials)
     end
 
-    def tweet
-      url = "https://api.twitter.com/1.1/statuses/update.json"
-      TwitterBot::Client.post(url, @credentials)
-      "true"
+    def tweets(username, count)
+      client.get(timeline_path(username, count))
+    end
+
+    def tweet(text)
+      client.post(update_status_path(text))
     end
 
     def retweet
@@ -24,6 +30,19 @@ module TwitterBot
     end
 
     def favorite
+    end
+
+    private
+    def timeline_path(username, count)
+      "statuses/user_timeline.json?screen_name=#{username}&count=#{count}"
+    end
+
+    def update_status_path(status)
+      "statuses/update.json?status=#{status}"
+    end
+
+    def client
+      @client ||= TwitterBot::Client.new(@oauth_config)
     end
   end
   

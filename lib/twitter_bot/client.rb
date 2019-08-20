@@ -1,27 +1,57 @@
-require "net/http"
+
 
 module TwitterBot
   class Client
-    class << self
-      def get
-        puts "Do a GET REQUEST"
-      end
+    def initialize(oauth_config)
+      @oauth_config = oauth_config
+    end
 
-      def post(url, headers)
-        uri = URI.parse(url)
+    def get(path)
+      @path = path
+      oauth = TwitterBot::Oauth.new(path, @oauth_config)
+      @request = Net::HTTP::Get.new(uri)
+      sign(oauth)
+      perform
+    end
 
-       # header = { 'Content-Type': "text/json" }
+    def post(path)
+      @path = path
+      oauth = TwitterBot::Oauth.new(path, @oauth_config)
+      @request = Net::HTTP::Get.new(uri)
+      sign(oauth)
+      perform
+    end
 
-       puts headers
-    
+    private
 
-        http = Net::HTTP.new(uri.host, uri.port)
-        request = Net::HTTP::Post.new(uri.request_uri, headers)
-        request.body = headers.to_s
+    def sign(oauth)
+      oauth_helper = OAuth::Client::Helper.new(@request, oauth.params.merge(:request_uri => uri))
+      @request["Authorization"] = oauth_helper.header
+    end
 
-        # Send the request
-        response = http.request(request)
-      end
+    def perform
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.request(@request).body
+    end
+
+    def build_request(method)
+    end
+
+    def port
+      uri.port
+    end
+
+    def host
+      uri.host
+    end
+
+    def uri
+      @uri ||= URI(twitter_url + @path)
+    end
+
+    def twitter_url
+      "https://api.twitter.com/1.1/"
     end
   end
 end
