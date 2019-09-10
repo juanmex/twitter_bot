@@ -1,5 +1,3 @@
-
-
 module TwitterBot
   class Client
     def initialize(oauth_config)
@@ -7,35 +5,31 @@ module TwitterBot
     end
 
     def get(path)
-      @path = path
-      oauth = TwitterBot::Oauth.new(path, @oauth_config)
-      @request = Net::HTTP::Get.new(uri)
-      sign(oauth)
-      perform
+      perform(Net::HTTP::Get, path)
     end
 
     def post(path)
-      @path = path
-      oauth = TwitterBot::Oauth.new(path, @oauth_config)
-      @request = Net::HTTP::Get.new(uri)
-      sign(oauth)
-      perform
+      perform(Net::HTTP::Post, path)
     end
 
     private
 
-    def sign(oauth)
-      oauth_helper = OAuth::Client::Helper.new(@request, oauth.params.merge(:request_uri => uri))
-      @request["Authorization"] = oauth_helper.header
-    end
-
-    def perform
+    def perform(request, path)
+      @path = path
+      signed_request = sign_request(request.new(uri))
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
-      http.request(@request).body
+      http.request(signed_request).body
     end
 
-    def build_request(method)
+    def sign_request(request)
+      oauth_helper = OAuth::Client::Helper.new(request, oauth.params.merge(:request_uri => uri))
+      request["Authorization"] = oauth_helper.header
+      request
+    end
+
+    def oauth
+      TwitterBot::Oauth.new(@path, @oauth_config)
     end
 
     def port
@@ -47,11 +41,8 @@ module TwitterBot
     end
 
     def uri
-      @uri ||= URI(twitter_url + @path)
+      @uri ||= URI(@path)
     end
 
-    def twitter_url
-      "https://api.twitter.com/1.1/"
-    end
   end
 end

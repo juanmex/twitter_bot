@@ -1,26 +1,28 @@
+require "twitter_bot/error"
 require "twitter_bot/version"
 require "twitter_bot/base"
+require "twitter_bot/classes"
+require "twitter_bot/url"
 require "twitter_bot/config"
 require "twitter_bot/oauth"
 require "twitter_bot/request"
 require "twitter_bot/client"
+require "json"
 
 module TwitterBot
-  class InvalidConfig < StandardError; end
-  # Your code goes here...
-
-  class Bot
-
+  class Bird
     def initialize(credentials = {})
       @oauth_config = TwitterBot::Config.new(credentials)
     end
 
-    def tweets(username, count)
-      client.get(timeline_path(username, count))
+    def timeline(data)
+      result = client.get(TwitterBot::Url.user_timeline(data))
+      parse(result)
     end
 
-    def tweet(text)
-      client.post(update_status_path(text))
+    def tweet(data)
+      result = client.post(TwitterBot::Url.statuses_update(data))
+      parse(result)
     end
 
     def retweet
@@ -32,18 +34,25 @@ module TwitterBot
     def favorite
     end
 
-    private
-    def timeline_path(username, count)
-      "statuses/user_timeline.json?screen_name=#{username}&count=#{count}"
+    def followers(data)
+      result = client.get(TwitterBot::Url.followers_list(data))
+      parse(result)
     end
 
-    def update_status_path(status)
-      "statuses/update.json?status=#{status}"
-    end
+    private
 
     def client
       @client ||= TwitterBot::Client.new(@oauth_config)
     end
+
+    private
+
+    def parse(result)
+      data = JSON.parse(result)
+      if data.is_a?(Hash) && data["errors"]
+        raise InvalidRequest, data["errors"].map{|e| "#{e["code"]} - #{e["message"]}" }.join(",")
+      end
+      data
+    end
   end
-  
 end

@@ -11,4 +11,10 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.before(:all) { 
+    @long_status = 'This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... ' 
+    @status = 'This is an amazing test of my first ruby gem ...'
+  }
+
 end

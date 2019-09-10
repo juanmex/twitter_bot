@@ -6,6 +6,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    byebug (11.0.1)
     diff-lcs (1.3)
     oauth (0.5.4)
     rake (10.5.0)
@@ -18,6 +19,9 @@ GEM
     rspec-expectations (3.8.4)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
+    rspec-its (1.3.0)
+      rspec-core (>= 3.0.0)
+      rspec-expectations (>= 3.0.0)
     rspec-mocks (3.8.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
@@ -28,9 +32,11 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 2.0)
+  byebug
   oauth (~> 0.5.4)
   rake (~> 10.0)
   rspec (~> 3.0)
+  rspec-its
   twitter_bot!
 
 BUNDLED WITH

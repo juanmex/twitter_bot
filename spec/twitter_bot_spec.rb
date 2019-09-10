@@ -1,28 +1,49 @@
-require 'json'
-RSpec.describe TwitterBot do
+RSpec.describe TwitterBot::Bird do
+  context "valid credentials" do
+    subject(:bot) {
+      TwitterBot::Bird.new({
+        :consumer_key => "",
+        :consumer_secret => "",
+        :access_token => "",
+        :access_token_secret => "",
+      })
+    }
 
-  subject(:bot) { 
-     TwitterBot::Bot.new({
-       :consumer_key => "IsiZffYDlPUq3Y6EiPLqMGyNL",
-       :consumer_secret => "rfxDqAiU1VQDdewevu1u4HZO7X1O1KeKUhaiTZYUx04NpMjV6a",
-       :access_token => "112822368-iPMcKaVnl34o8I6SB5y8hwsHteR6wZeuCyABFhqr",
-       :access_token_secret => "3kfFyxWoqk819NZx0hy9fF796p7ZxxsxK4wgTESgsN3Sr"
-     })
-  }
-
-
-
-  it "send a tweet" do  
-    puts bot.tweet("Hola mundo! Desde twitter_bot")
-    true
-  end
-=begin
-  it "get timeline by screen name" do  
-    result = JSON.parse(bot.tweets("juan_m3x", 2))
-    result.each do |tweet|
-      puts "Tweet >>>>> " + tweet["text"]
+    it "don't send a tweet" do
+      expect { bot.tweet({ :status => @long_status }) }.to raise_error InvalidRequest
     end
-    true
+
+    it "send a tweet" do
+      tweet = bot.tweet({ :status => @status })
+      expect(tweet).to be_an_instance_of Hash
+      expect(tweet["text"]).to be_an_instance_of String
+      expect(tweet["text"]).to eql @status
+    rescue => e
+      expect(e).to be_an_instance_of InvalidRequest
+    end
+
+    it "timeline by screen name" do
+      tweets = bot.timeline("juan_m3x")
+      expect(tweets).to be_an_instance_of Array
+      tweet = tweets.first
+      if tweet
+        expect(tweet).to be_an_instance_of Hash
+        expect(tweet["text"]).to be_an_instance_of String
+      end
+    rescue => e
+      expect(e).to be_an_instance_of InvalidRequest
+    end
+
+    it "followers by screen name" do
+      followers = bot.followers("juan_m3x")
+      expect(followers).to be_an_instance_of Hash
+      expect(followers["users"]).to be_an_instance_of Array
+      follower = followers["users"].first
+      if follower
+        expect(follower).to be_an_instance_of Hash
+      end
+    rescue => e
+      expect(e).to be_an_instance_of InvalidRequest
+    end
   end
-=end
 end

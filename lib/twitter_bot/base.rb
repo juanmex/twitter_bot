@@ -30,7 +30,7 @@ module TwitterBot
     private
 
     def attr_exist?(attr)
-      attributes.include?(attr)
+      attributes.include?(attr.to_sym)
     end
   end
 end
