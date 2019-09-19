@@ -14,35 +14,26 @@ module TwitterBot
 
     private
 
-    def perform(request, path)
-      @path = path
-      signed_request = sign_request(request.new(uri))
-      http = Net::HTTP.new(uri.host, uri.port)
+    def perform(request_klass, path)
+      @uri = URI(path)
+      oauth = TwitterBot::Oauth.new(path, @oauth_config)
+
+      request = request_klass.new(@uri)
+      signed_request = sign_request(request, oauth)
+
+      http = Net::HTTP.new(@uri.host, @uri.port)
       http.use_ssl = true
-      http.request(signed_request).body
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      result = http.request(signed_request).body
+      result
     end
 
-    def sign_request(request)
-      oauth_helper = OAuth::Client::Helper.new(request, oauth.params.merge(:request_uri => uri))
+    def sign_request(request, oauth)
+      oauth_helper = OAuth::Client::Helper.new(request, oauth.params.merge(:request_uri => @uri))
       request["Authorization"] = oauth_helper.header
       request
     end
 
-    def oauth
-      TwitterBot::Oauth.new(@path, @oauth_config)
-    end
-
-    def port
-      uri.port
-    end
-
-    def host
-      uri.host
-    end
-
-    def uri
-      @uri ||= URI(@path)
-    end
 
   end
 end

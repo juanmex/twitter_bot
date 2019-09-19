@@ -12,9 +12,15 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.before(:all) { 
-    @long_status = 'This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... ' 
-    @status = 'This is an amazing test of my first ruby gem ...'
+  config.before(:all) {
+    @long_status = "This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... This is an amazing test of my first ruby gem ... "
+    @status = "This is an amazing test of my first ruby gem ..."
   }
 
+  def validate_exception(e)
+    logger = Logger.new(STDOUT)
+    logger.level = Logger::ERROR
+    logger.error(e.message)
+    expect(e).to be_an_instance_of InvalidRequest
+  end
 end

@@ -19,7 +19,23 @@ RSpec.describe TwitterBot::Bird do
       expect(tweet["text"]).to be_an_instance_of String
       expect(tweet["text"]).to eql @status
     rescue => e
-      expect(e).to be_an_instance_of InvalidRequest
+      validate_exception(e)
+    end
+
+    it "delete a tweet" do
+      last_tweet = bot.timeline("juan_m3x").first
+      deleted_tweet = bot.delete_tweet(last_tweet["id"])
+      expect(last_tweet["text"]).to eql deleted_tweet["text"]
+    rescue => e
+      validate_exception(e)
+    end
+
+    it "do a retweet" do
+      tweets = bot.timeline("platzi")
+      if tweets.is_a? Array
+        tweet = tweets.first
+        retweet = bot.retweet(tweet["id"])
+      end
     end
 
     it "timeline by screen name" do
@@ -31,7 +47,7 @@ RSpec.describe TwitterBot::Bird do
         expect(tweet["text"]).to be_an_instance_of String
       end
     rescue => e
-      expect(e).to be_an_instance_of InvalidRequest
+      validate_exception(e)
     end
 
     it "followers by screen name" do
@@ -43,7 +59,8 @@ RSpec.describe TwitterBot::Bird do
         expect(follower).to be_an_instance_of Hash
       end
     rescue => e
-      expect(e).to be_an_instance_of InvalidRequest
+      validate_exception(e)
     end
+
   end
 end

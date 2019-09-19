@@ -38,6 +38,15 @@ module TwitterBot
                  end
         "#{@base_url}followers/list.json?#{params.to_query}"
       end
+
+      def statuses_retweet(id)
+        "#{@base_url}statuses/retweet/#{id}.json"
+      end
+
+      def statuses_destroy(id)
+        "#{@base_url}statuses/destroy/#{id}.json"
+      end
+
     end
   end
 end

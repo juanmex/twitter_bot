@@ -7,6 +7,7 @@ require "twitter_bot/config"
 require "twitter_bot/oauth"
 require "twitter_bot/request"
 require "twitter_bot/client"
+require "twitter_bot/logger"
 require "json"
 
 module TwitterBot
@@ -25,7 +26,14 @@ module TwitterBot
       parse(result)
     end
 
-    def retweet
+    def delete_tweet(id)
+      result = client.post(TwitterBot::Url.statuses_destroy(id))
+      parse(result)
+    end
+
+    def retweet(id)
+      result = client.post(TwitterBot::Url.statuses_retweet(id))
+      parse(result)
     end
 
     def reply
