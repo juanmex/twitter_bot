@@ -46,5 +46,14 @@ module TwitterBot
                   :skip_status,
                   :include_user_entities
   end
-  
+
+  class StatusesShowParams < TwitterBot::Params
+    attr_accessor :id,
+                  :trim_user,
+                  :include_my_retweet,
+                  :include_entities,
+                  :include_ext_alt_text,
+                  :include_card_uri
+                 
+  end
 end

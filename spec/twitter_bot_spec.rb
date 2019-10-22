@@ -1,11 +1,12 @@
 RSpec.describe TwitterBot::Bird do
   context "valid credentials" do
+    
     subject(:bot) {
       TwitterBot::Bird.new({
-        :consumer_key => "",
-        :consumer_secret => "",
-        :access_token => "",
-        :access_token_secret => "",
+        :consumer_key => "se8fsQ4ZE6ui7N0NpdttSPmVJ",
+        :consumer_secret => "VA22hMrIYjYORlm21XxQiOblXgyvHCBv8r0VlSC1hcRS1Hn9QN",
+        :access_token => "112822368-iPMcKaVnl34o8I6SB5y8hwsHteR6wZeuCyABFhqr",
+        :access_token_secret => "3kfFyxWoqk819NZx0hy9fF796p7ZxxsxK4wgTESgsN3Sr",
       })
     }
 

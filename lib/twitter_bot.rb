@@ -1,8 +1,17 @@
 require "twitter_bot/error"
 require "twitter_bot/version"
 require "twitter_bot/base"
-require "twitter_bot/classes"
-require "twitter_bot/url"
+
+require "twitter_bot/actions/actions"
+require "twitter_bot/actions/tweet"
+require "twitter_bot/actions/retweet"
+
+require "twitter_bot/params/params"
+
+require "twitter_bot/url/tweets"
+require "twitter_bot/url/url"
+
+
 require "twitter_bot/config"
 require "twitter_bot/oauth"
 require "twitter_bot/request"
@@ -12,27 +21,15 @@ require "json"
 
 module TwitterBot
   class Bird
+    include TwitterBot::Actions::Tweet
+    include TwitterBot::Actions::Retweet
+
     def initialize(credentials = {})
       @oauth_config = TwitterBot::Config.new(credentials)
     end
 
     def timeline(data)
       result = client.get(TwitterBot::Url.user_timeline(data))
-      parse(result)
-    end
-
-    def tweet(data)
-      result = client.post(TwitterBot::Url.statuses_update(data))
-      parse(result)
-    end
-
-    def delete_tweet(id)
-      result = client.post(TwitterBot::Url.statuses_destroy(id))
-      parse(result)
-    end
-
-    def retweet(id)
-      result = client.post(TwitterBot::Url.statuses_retweet(id))
       parse(result)
     end
 
