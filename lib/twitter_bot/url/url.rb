@@ -1,39 +1,17 @@
 module TwitterBot
   class Url
-    #https://stackoverflow.com/questions/37364454/what-is-a-ruby-factory-method
-    #http://rohitrox.github.io/2013/07/02/ruby-dynamic-methods/
-    #http://rubyblog.pro/2016/10/factory-method-pattern-in-ruby
-    include TwitterBot::UrlTweet
+    attr_reader :relative_url
+    attr_accessor :data
 
-    URL_CONFIGS = {
-      :statuses_update => {
-        :klass => StatusesUpdateParams,
-        :attr => :status
-      }
-    }
+    def full_url
+      base_url + @relative_url
+    end
+
+    def base_url
+      "https://api.twitter.com/1.1/"
+    end
 
     class << self
-
-      def base_url
-        "https://api.twitter.com/1.1/"
-      end
-
-      def statuses_update(data)
-        params = case data
-                 when String
-                   StatusesUpdateParams.new({ :status => data })
-                 when Hash
-                   StatusesUpdateParams.new(data)
-                 else
-                   raise "Status --#{data.class.name}-- not supported. Use a String or a Hash"
-                 end
-        "#{base_url}statuses/update.json?#{params.to_query}"
-      end
-  
-      def statuses_destroy(id)
-        "#{base_url}statuses/destroy/#{id}.json"
-      end
-
       def user_timeline(data)
         params = case data
                  when String
@@ -75,4 +53,45 @@ module TwitterBot
       end
     end
   end
+
+
+  class QueryParams < TwitterBot::Url
+    attr_accessor :default_attr
+    attr_accessor :params_class
+
+    def initialize(params_class, default_attr, relative_url, data)
+      @data = data
+      @relative_url = relative_url
+      @default_attr = default_attr
+      @params_class = params_class
+    end
+
+    def to_s
+      params = case @data
+      when String
+        @params_class.new({ @default_attr => @data })
+      when Hash
+        @params_class.new(@data)
+      else
+        raise "Status --#{@data.class.name}-- not supported. Pleas use a String or a Hash"
+      end
+      "#{full_url}?#{params.to_query}"
+    end
+  end
+
+  class PathParams < TwitterBot::Url
+    def initialize(relative_url, data)
+      @relative_url = relative_url
+      @data = data
+    end
+    
+    def to_s
+      @data.each do |key , value|
+        @relative_url[":#{key}"] = value
+      end
+      full_url
+    end
+
+  end
+
 end

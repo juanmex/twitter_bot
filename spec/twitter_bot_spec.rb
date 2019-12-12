@@ -3,10 +3,10 @@ RSpec.describe TwitterBot::Bird do
     
     subject(:bot) {
       TwitterBot::Bird.new({
-        :consumer_key => "se8fsQ4ZE6ui7N0NpdttSPmVJ",
-        :consumer_secret => "VA22hMrIYjYORlm21XxQiOblXgyvHCBv8r0VlSC1hcRS1Hn9QN",
-        :access_token => "112822368-iPMcKaVnl34o8I6SB5y8hwsHteR6wZeuCyABFhqr",
-        :access_token_secret => "3kfFyxWoqk819NZx0hy9fF796p7ZxxsxK4wgTESgsN3Sr",
+        :consumer_key => "",
+        :consumer_secret => "",
+        :access_token => "",
+        :access_token_secret => "",
       })
     }
 
@@ -24,7 +24,7 @@ RSpec.describe TwitterBot::Bird do
     end
 
     it "delete a tweet" do
-      last_tweet = bot.timeline("juan_m3x").first
+      last_tweet = bot.timeline("juanmexm").first
       deleted_tweet = bot.delete_tweet(last_tweet["id"])
       expect(last_tweet["text"]).to eql deleted_tweet["text"]
     rescue => e
@@ -40,7 +40,7 @@ RSpec.describe TwitterBot::Bird do
     end
 
     it "timeline by screen name" do
-      tweets = bot.timeline("juan_m3x")
+      tweets = bot.timeline("juanmexm")
       expect(tweets).to be_an_instance_of Array
       tweet = tweets.first
       if tweet
@@ -52,7 +52,7 @@ RSpec.describe TwitterBot::Bird do
     end
 
     it "followers by screen name" do
-      followers = bot.followers("juan_m3x")
+      followers = bot.followers("juanmexm")
       expect(followers).to be_an_instance_of Hash
       expect(followers["users"]).to be_an_instance_of Array
       follower = followers["users"].first

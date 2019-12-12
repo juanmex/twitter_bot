@@ -8,8 +8,9 @@ require "twitter_bot/actions/retweet"
 
 require "twitter_bot/params/params"
 
-require "twitter_bot/url/tweets"
 require "twitter_bot/url/url"
+require "twitter_bot/url/tweets"
+
 
 
 require "twitter_bot/config"
