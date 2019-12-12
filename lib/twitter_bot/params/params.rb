@@ -27,6 +27,16 @@ module TwitterBot
                   :card_uri
   end
 
+  class StatusesShowParams < TwitterBot::Params
+    attr_accessor :id,
+                  :trim_user,
+                  :include_my_retweet,
+                  :include_entities,
+                  :include_ext_alt_text,
+                  :include_card_uri
+                 
+  end
+
   class StatusesUserTimelineParams < TwitterBot::Params
     attr_accessor :user_id,
                   :screen_name,
@@ -47,13 +57,5 @@ module TwitterBot
                   :include_user_entities
   end
 
-  class StatusesShowParams < TwitterBot::Params
-    attr_accessor :id,
-                  :trim_user,
-                  :include_my_retweet,
-                  :include_entities,
-                  :include_ext_alt_text,
-                  :include_card_uri
-                 
-  end
+  
 end

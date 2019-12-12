@@ -6,10 +6,12 @@ RSpec.describe TwitterBot::Bird do
         :consumer_key => "",
         :consumer_secret => "",
         :access_token => "",
-        :access_token_secret => "",
+        :access_token_secret => ""
       })
     }
 
+
+=begin
     it "don't send a tweet" do
       expect { bot.tweet({ :status => @long_status }) }.to raise_error InvalidRequest
     end
@@ -30,15 +32,21 @@ RSpec.describe TwitterBot::Bird do
     rescue => e
       validate_exception(e)
     end
+=end
+
+    it "show a tweet" do
+      tweet = bot.show("1204858889583415297")
+      puts tweet
+    end
 
     it "do a retweet" do
       tweets = bot.timeline("platzi")
       if tweets.is_a? Array
         tweet = tweets.first
-        retweet = bot.retweet(tweet["id"])
+        #retweet = bot.retweet(tweet["id"])
       end
     end
-
+=begin
     it "timeline by screen name" do
       tweets = bot.timeline("juanmexm")
       expect(tweets).to be_an_instance_of Array
@@ -62,6 +70,8 @@ RSpec.describe TwitterBot::Bird do
     rescue => e
       validate_exception(e)
     end
+=end
+
 
   end
 end
